@@ -1,0 +1,2618 @@
+scala_cheatsheet
+
+Scala Cheat Sheet¶
+
+-   Author : Waris RADJI student at University of Paris XIII
+-   Source :
+    https://www.amazon.fr/SCALA-Pas-%C3%A0-Gildas-M%C3%A9nier/dp/2340000092
+
+Table of Contents
+
+-   Scala Cheat Sheet
+    -   Scala essentials
+        -   Display and Strings
+            -   Blocks and expressions
+        -   Method definitions
+        -   Conditional
+        -   Pattern matching
+        -   Exceptions
+        -   Parametric type
+    -   Object oriented programming
+        -   General hierarchy of classes / traits / objects
+        -   object
+        -   class
+    -   Arrays
+        -   Declaration of array
+        -   Access to the elements
+        -   Iteration on the elements of an array
+        -   Creating an array by transformation
+            -   for/yield
+            -   filter
+            -   map
+            -   sortWith
+            -   reduce
+        -   Arrays with a variable size
+    -   Main collections
+        -   Principles
+        -   Tuples
+        -   Map
+            -   Map implementations
+        -   Option
+        -   Either
+        -   Lists
+        -   Set
+            -   Set Implementations
+        -   Vector
+        -   Stack
+        -   Queue
+        -   Range
+        -   Streams
+    -   Collections in detail
+        -   Traversable
+        -   Iterable
+        -   Seq
+        -   Usual operations
+            -   Add / remove an element
+            -   Update
+            -   Assemblist operations
+            -   Cast
+            -   Operations of Iterables
+            -   Selection and cutting
+            -   Transformation of a collection
+            -   Operations of Seq
+        -   Parallel collections
+            -   par
+        -   Lazy view
+    -   Object oriented programming
+        -   Class statement
+        -   public, private and protected access
+            -   public
+            -   private
+            -   protected
+            -   Refine the scope of access
+        -   Getters and Setters
+        -   Constructors
+        -   Nested Classes
+        -   Anonymous Classes
+        -   Type and this
+        -   Transtyping
+        -   Object
+            -   Singleton Object
+            -   Any Methods
+            -   Apply and Unapply
+        -   case class
+        -   Inheritance
+            -   extends
+            -   Constructor and super-class
+            -   override
+        -   Abstract class
+        -   final
+        -   Implicit conversions
+            -   Implicit class
+            -   implicit conversions method
+        -   Trait
+
+Scala essentials¶
+
+In [1]:
+
+    var a = 5 // variable
+    var b: Int = 5 // variable with explicit typing
+    val zero = 0 // constant
+
+Out[1]:
+
+    0
+
+Display and Strings¶
+
+In [2]:
+
+    val name = "joe"
+    "Hello " + name + " how are you ?"
+    // or
+    s"Hello $name how are you ?"
+
+Out[2]:
+
+    Hello joe how are you ?
+
+In [3]:
+
+    s"2 + 2 = ${2+2}"
+
+Out[3]:
+
+    2 + 2 = 4
+
+In [4]:
+
+    raw"\nature"// The "\n" is not escaped
+
+Out[4]:
+
+    \nature
+
+In [5]:
+
+    printf("pi = %2.2f\n", 3.1415)
+    f"pi = ${3.1415}%2.2f"
+
+    pi = 3,14
+
+In [6]:
+
+    """1...
+    2...
+    3."""
+    // ou
+    """1...
+        |2...
+        |3.""".stripMargin // stripMargin("#") to change the default value
+
+Out[6]:
+
+    1...
+    2...
+    3.
+
+Blocks and expressions¶
+
+In [7]:
+
+    {val a = 6; val b = 4; a + b}
+
+Out[7]:
+
+    10
+
+In [8]:
+
+    def f: Int = {val a = 6; return a; val b = 7; a + b} // return interrupts the evaluation
+
+Out[8]:
+
+    6
+
+In [9]:
+
+    scala.math.sin(3.14)
+    // or (when the function only takes one parameter)
+    scala.math.sin{3.14}
+
+Out[9]:
+
+    0.0015926529164868282
+
+In [10]:
+
+    lazy val a = {println("Statement of a");1} // evaluate when the variable is called
+    val b = {println("Statement of b");2}
+    a+b
+
+    Statement of b
+    Statement of a
+
+Method definitions¶
+
+In [11]:
+
+    def a = 1
+
+Out[11]:
+
+    1
+
+In [12]:
+
+    def sum(v1: Int, v2: Int) = v1 + v2
+    def sum1(v1: Int, v2: Int): Int = v1 + v2 // to indicate the type of return
+
+Out[12]:
+
+    sum: (v1: Int, v2: Int)Int
+    sum1: (v1: Int, v2: Int)Int
+
+In [13]:
+
+    def zeroOrx(x: Int = 0) = x // parameter with default value
+    s"${zeroOrx()}, ${zeroOrx(100)}"
+
+Out[13]:
+
+    0, 100
+
+In [14]:
+
+    def mean(x: Int*) = x.sum / x.size
+    mean(1, 2, 3, 4, 5)
+
+Out[14]:
+
+    3
+
+In [15]:
+
+    // procedure (Unit): possibility to remove the "="
+    def unit() {println("Unit")}
+
+    Unit
+
+In [16]:
+
+    val flagColor: (String, String, String) => String = (c1, c2, c3) => {c1 + " " + c2 + " " + c3}
+    // ou
+    val flagColor1 = (c1: String, c2: String, c3: String) => {c1 + " " + c2 + " " + c3}
+
+Out[16]:
+
+    <function3>
+
+Conditional¶
+
+In [17]:
+
+    if (scala.util.Random.nextFloat > 0.5) "win" else "loose"
+
+Out[17]:
+
+    win
+
+Pattern matching¶
+
+In [18]:
+
+    scala.util.Random.nextInt match {
+        case 0 => println("zero")
+        case a if a > 0 => println("positive")
+        case a if a < 0 => println("negative")
+        case _ => println("end")
+    }
+
+    negative
+
+Exceptions¶
+
+In [19]:
+
+    throw new Exception("...")
+
+    java.lang.Exception: ...
+      ... 44 elided
+
+In [20]:
+
+    try {
+        1 / 0 
+    } catch {
+        case ex: ArithmeticException => ex.printStackTrace()
+        case ex: Exception => ex.printStackTrace()
+        case _ => println("Nothing")
+    }
+
+    java.lang.ArithmeticException: / by zero
+        at $line46.$read$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw.liftedTree1$1(<console>:91)
+        at $line46.$read$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw.<init>(<console>:90)
+        at $line46.$read$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw.<init>(<console>:101)
+        at $line46.$read$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw.<init>(<console>:103)
+        at $line46.$read$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw.<init>(<console>:105)
+        at $line46.$read$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw.<init>(<console>:107)
+        at $line46.$read$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw.<init>(<console>:109)
+        at $line46.$read$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw.<init>(<console>:111)
+        at $line46.$read$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw.<init>(<console>:113)
+        at $line46.$read$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw.<init>(<console>:115)
+        at $line46.$read$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw.<init>(<console>:117)
+        at $line46.$read$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw.<init>(<console>:119)
+        at $line46.$read$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw.<init>(<console>:121)
+        at $line46.$read$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw.<init>(<console>:123)
+        at $line46.$read$$iw$$iw$$iw$$iw$$iw$$iw$$iw.<init>(<console>:125)
+        at $line46.$read$$iw$$iw$$iw$$iw$$iw$$iw.<init>(<console>:127)
+        at $line46.$read$$iw$$iw$$iw$$iw$$iw.<init>(<console>:129)
+        at $line46.$read$$iw$$iw$$iw$$iw.<init>(<console>:131)
+        at $line46.$read$$iw$$iw$$iw.<init>(<console>:133)
+        at $line46.$read$$iw$$iw.<init>(<console>:135)
+        at $line46.$read$$iw.<init>(<console>:137)
+        at $line46.$read.<init>(<console>:139)
+        at $line46.$read$.<init>(<console>:143)
+        at $line46.$read$.<clinit>(<console>)
+        at $line46.$eval$.$print$lzycompute(<console>:7)
+        at $line46.$eval$.$print(<console>:6)
+        at $line46.$eval.$print(<console>)
+        at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+        at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+        at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+        at java.lang.reflect.Method.invoke(Unknown Source)
+        at scala.tools.nsc.interpreter.IMain$ReadEvalPrint.call(IMain.scala:793)
+        at scala.tools.nsc.interpreter.IMain$Request.loadAndRun(IMain.scala:1054)
+        at scala.tools.nsc.interpreter.IMain$WrappedRequest$$anonfun$loadAndRunReq$1.apply(IMain.scala:645)
+        at scala.tools.nsc.interpreter.IMain$WrappedRequest$$anonfun$loadAndRunReq$1.apply(IMain.scala:644)
+        at scala.reflect.internal.util.ScalaClassLoader$class.asContext(ScalaClassLoader.scala:31)
+        at scala.reflect.internal.util.AbstractFileClassLoader.asContext(AbstractFileClassLoader.scala:19)
+        at scala.tools.nsc.interpreter.IMain$WrappedRequest.loadAndRunReq(IMain.scala:644)
+        at scala.tools.nsc.interpreter.IMain.interpret(IMain.scala:576)
+        at scala.tools.nsc.interpreter.IMain.interpret(IMain.scala:572)
+        at com.twosigma.beakerx.scala.evaluator.ScalaEvaluatorGlue.evaluate(ScalaEvaluatorGlue.scala:121)
+        at com.twosigma.beakerx.scala.evaluator.ScalaCodeRunner.call(ScalaCodeRunner.java:46)
+        at com.twosigma.beakerx.scala.evaluator.ScalaCodeRunner.call(ScalaCodeRunner.java:29)
+        at java.util.concurrent.FutureTask.run(Unknown Source)
+        at java.lang.Thread.run(Unknown Source)
+
+Parametric type¶
+
+In [21]:
+
+    def hey[T](x: T) = "Hey " + x.toString
+    // equivalent to 
+    def hey1(x: Any) = "Hey " + x.toString
+    hey[String]("Joe") + " " + hey1(122)
+
+Out[21]:
+
+    Hey Joe Hey 122
+
+In [22]:
+
+    import Ordering.Implicits._
+
+Out[22]:
+
+    scala.math.Ordering$Implicits$@7d267ecc
+
+In [23]:
+
+    def greaterThan[T: Ordering](x: T, y: T): Boolean = x > y
+    moreThan(1, 3)
+
+    <console>:95: error: not found: value moreThan
+           moreThan(1, 3)
+           ^
+
+In [24]:
+
+    type ArrInt = Array[Int] // type alias
+
+Out[24]:
+
+    defined type alias ArrInt
+
+Object oriented programming¶
+
+General hierarchy of classes / traits / objects¶
+
+[]
+
+object¶
+
+In [25]:
+
+    object Test {
+        def main(args: String*){
+            println("Hello world!")
+        }
+    }
+
+Out[25]:
+
+    $line54.$read$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$Test$@4a67067a
+
+class¶
+
+In [26]:
+
+    class Money(startMoney: Int) {
+        def this() = this(0) // builder
+        private var contain: Int = 0
+        def +=(money: Int) = contain += money
+        def empty = {val solde = contain; contain = 0; solde}
+        def howMany = contain
+        override def toString = contain.toString
+    }
+    object Money {
+        // method and static variables
+        def foo = "bar"
+    }
+
+Out[26]:
+
+    $line55.$read$$iw$$iw$Money$@2c10b763
+
+In [27]:
+
+    val m = new Money()
+    m += 10
+    m.empty
+
+Out[27]:
+
+    10
+
+In [28]:
+
+    Money.foo
+
+Out[28]:
+
+    bar
+
+Arrays¶
+
+Declaration of array¶
+
+In [29]:
+
+    val ints = new Array[Int](30) // empty array
+    val ints2 = Array[Int](1, 2, 3, 4) // array with init values
+
+Out[29]:
+
+    [1, 2, 3, 4]
+
+In [30]:
+
+    val matrix4x9 = Array.ofDim[Double](4, 9)
+
+Out[30]:
+
+    [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+
+Access to the elements¶
+
+In [31]:
+
+    ints2(3)
+
+Out[31]:
+
+    4
+
+In [32]:
+
+    ints2(3) = 1000 
+    // or
+    ints2.update(3, 1000)
+    ints2(3)
+
+Out[32]:
+
+    1000
+
+Iteration on the elements of an array¶
+
+In [33]:
+
+    val days = Array("Monday", "Tuesday", "Wednesday", "Thrusday", "Friday", "Saturday", "Sunday")
+
+Out[33]:
+
+    [Monday, Tuesday, Wednesday, Thrusday, Friday, Saturday, Sunday]
+
+In [34]:
+
+    var i = 0
+    while(i < days.length){
+        println(days(i))
+        i += 1
+    }
+
+    Monday
+    Tuesday
+    Wednesday
+    Thrusday
+    Friday
+    Saturday
+    Sunday
+
+In [35]:
+
+    for (i <- 0 until days.length) println(days(i))
+
+    Monday
+    Tuesday
+    Wednesday
+    Thrusday
+    Friday
+    Saturday
+    Sunday
+
+In [36]:
+
+    for (day <- days) println(day)
+
+    Monday
+    Tuesday
+    Wednesday
+    Thrusday
+    Friday
+    Saturday
+    Sunday
+
+In [37]:
+
+    days foreach println
+
+    Monday
+    Tuesday
+    Wednesday
+    Thrusday
+    Friday
+    Saturday
+    Sunday
+
+Creating an array by transformation¶
+
+for/yield¶
+
+In [38]:
+
+    val daysToUpperCase = for(day <- days) yield day.toUpperCase
+
+Out[38]:
+
+    [MONDAY, TUESDAY, WEDNESDAY, THRUSDAY, FRIDAY, SATURDAY, SUNDAY]
+
+In [39]:
+
+    val daysWithLetterE = for(day <- days if day.contains("e")) yield day
+
+Out[39]:
+
+    [Tuesday, Wednesday]
+
+In [40]:
+
+    val ints = Array(1, 2, 3, 4)
+    val chars = Array('a', 'b', 'c', 'd')
+    for (int <- ints; char <- chars) yield int.toString + char.toString
+
+Out[40]:
+
+    [1a, 1b, 1c, 1d, 2a, 2b, 2c, 2d, 3a, 3b, 3c, 3d, 4a, 4b, 4c, 4d]
+
+filter¶
+
+In [41]:
+
+    Array(1, 2, 3, 4, 5).filter(x => x % 2 == 0)
+
+Out[41]:
+
+    [2, 4]
+
+map¶
+
+In [42]:
+
+    Array(1, 2, 3, 4, 5).map(x => x*x)
+
+Out[42]:
+
+    [1, 4, 9, 16, 25]
+
+sortWith¶
+
+In [43]:
+
+    Array(3, 6, 2, 0, 8, 5).sortWith((e1, e2) => e1 < e2)
+
+Out[43]:
+
+    [0, 2, 3, 5, 6, 8]
+
+reduce¶
+
+In [44]:
+
+    Array(1, 2, 3, 4, 5).reduce((e1, e2) => e1+e2) // équivalent à Array(1, 2, 3, 4, 5).sum
+
+Out[44]:
+
+    15
+
+Arrays with a variable size¶
+
+In [45]:
+
+    import scala.collection.mutable.ArrayBuffer
+
+Out[45]:
+
+    import scala.collection.mutable.ArrayBuffer
+
+In [46]:
+
+    val arr = ArrayBuffer[Int]()
+
+Out[46]:
+
+    [[]]
+
+In [47]:
+
+    arr += 25
+
+Out[47]:
+
+    [[25]]
+
+In [48]:
+
+    arr += (1, 2, 3, 4)
+
+Out[48]:
+
+    [[25, 1, 2, 3, 4]]
+
+In [49]:
+
+    arr.insert(2, 5, 5)
+    arr
+
+Out[49]:
+
+    [[25, 1, 5, 5, 2, 3, 4]]
+
+In [50]:
+
+    arr ++= Array(99, 99)
+
+Out[50]:
+
+    [[25, 1, 5, 5, 2, 3, 4, 99, 99]]
+
+In [51]:
+
+    arr.remove(4)
+
+Out[51]:
+
+    2
+
+Main collections¶
+
+Principles¶
+
+-   Lazy evaluation: Allows to delay the transformation operations and
+    thus to calculate or store only if necessary.
+
+-   Parallelization support: Method calls do not change. They are just
+    calling in parallel instead of calling them one after the other.
+
+-   Mutable: Write access.
+
+-   Immutable: No write access.
+
+Tuples¶
+
+Storage of values
+
+In [52]:
+
+    val oneAndTwo = (1, 2)
+    val oneAndTwo1 = Tuple2(1, 2) // There are tuples that range from 1 element to 22
+    val oneAndTwo2 = 1 -> 2
+
+Out[52]:
+
+    (1,2)
+
+In [53]:
+
+    s"${oneAndTwo._1}, ${oneAndTwo._2}"
+
+Out[53]:
+
+    1, 2
+
+In [54]:
+
+    val (a, b, _, d) = (1, 2, 3, 4)  // "_" for a meaningless value
+    s"$a $b $d"
+
+Out[54]:
+
+    1 2 4
+
+Map¶
+
+Key-value couple
+
+In [55]:
+
+    val map = Map(("one", 1), ("two", 2))
+    val map1 = Map("one" -> 1, "two" -> 2)
+
+In [56]:
+
+    map("two")
+
+Out[56]:
+
+    2
+
+In [57]:
+
+    map.getOrElse("three", -1)
+
+Out[57]:
+
+    -1
+
+In [58]:
+
+    val mutableMap = scala.collection.mutable.Map[String, Int]()
+    mutableMap("three") = 3
+    mutableMap += (("one" -> 1), ("two" -> 2))
+    mutableMap -= "one"
+    mutableMap += "five" -> 5
+
+Out[58]:
+
+    Map(three -> 3, five -> 5, two -> 2)
+
+In [59]:
+
+    val reverseMap = for((key, value) <- mutableMap) yield (value, key)
+    // or
+    mutableMap.map(element => (element._2, element._1))
+
+Out[59]:
+
+    Map(2 -> two, 5 -> five, 3 -> three)
+
+In [60]:
+
+    s"keys: ${mutableMap.keys} values: ${mutableMap.values}"
+
+Out[60]:
+
+    keys: Set(three, five, two) values: HashMap(3, 5, 2)
+
+In [61]:
+
+    mutableMap.partition(_._2 % 2 == 0) // cut a Map according to a predicate
+
+Out[61]:
+
+    (Map(two -> 2),Map(three -> 3, five -> 5))
+
+Map implementations¶
+
+Immutable¶
+
+In [62]:
+
+    import scala.collection.immutable
+
+    immutable.HashMap[AnyVal, AnyVal]()
+    immutable.IntMap[AnyVal]()
+    immutable.ListMap[AnyVal, AnyVal]()
+    immutable.LongMap[AnyVal]()
+    immutable.SortedMap[Int, AnyVal]()
+    immutable.TreeMap[Int, AnyVal]()
+
+Mutable¶
+
+In [63]:
+
+    import scala.collection.mutable
+
+    mutable.HashMap[AnyVal, AnyVal]() 
+    mutable.LinkedHashMap[AnyVal, AnyVal]() 
+    mutable.ListMap[AnyVal, AnyVal]() 
+    mutable.OpenHashMap[AnyVal, AnyVal]()
+    mutable.WeakHashMap[AnyVal, AnyVal]()
+
+Out[63]:
+
+    Map()
+
+Option¶
+
+Presence (Some) or not (None) of value
+
+In [64]:
+
+    val emptyOpt: Option[Int] = None
+
+Out[64]:
+
+    None
+
+In [65]:
+
+    val fullOpt: Option[Int] = Some(42)
+
+Out[65]:
+
+    Some(42)
+
+In [66]:
+
+    emptyOpt match {
+        case Some(value) => println(value)
+        case None => println("Empty")
+    }
+
+    Empty
+
+In [67]:
+
+    fullOpt.get
+
+Out[67]:
+
+    42
+
+In [68]:
+
+    emptyOpt.isEmpty
+
+Out[68]:
+
+    true
+
+Either¶
+
+Choice between 2 return values
+
+In [69]:
+
+    def divide(a: Double, b: Double): Either[String, Double] = {
+        if (b==0.0) Left("Division by zero") else Right(a/b)
+    }
+    divide(4, 0)
+
+Out[69]:
+
+    Left(Division by zero)
+
+In [70]:
+
+    divide(4, 2)
+
+Out[70]:
+
+    Right(2.0)
+
+Lists¶
+
+Object sequence defined in recursive ways
+
+In [71]:
+
+    val list = List(1, 2, 3, 4)
+
+Out[71]:
+
+    [[1, 2, 3, 4]]
+
+In [72]:
+
+    list.head
+
+Out[72]:
+
+    1
+
+In [73]:
+
+    list.tail
+
+Out[73]:
+
+    [[2, 3, 4]]
+
+In [74]:
+
+    list.tail.tail.head
+
+Out[74]:
+
+    3
+
+In [75]:
+
+    list.tail.tail.tail.tail
+
+Out[75]:
+
+    [[]]
+
+In [76]:
+
+    Nil
+
+Out[76]:
+
+    [[]]
+
+In [77]:
+
+    1 :: List(2, 3, 4)
+
+Out[77]:
+
+    [[1, 2, 3, 4]]
+
+In [78]:
+
+    1 :: 2 :: 3 :: 4 :: Nil
+
+Out[78]:
+
+    [[1, 2, 3, 4]]
+
+In [79]:
+
+    list(3)
+
+Out[79]:
+
+    4
+
+In [80]:
+
+    def lCount(lst: List[Int], func: (Int) => Boolean): Int = {
+        if (lst == Nil) 0 else
+            (if (func(lst.head)) 1 else 0) + lCount(lst.tail, func)
+    }
+    lCount(List(1, 2, 3, 4), _ % 2 == 0)
+
+Out[80]:
+
+    2
+
+Set¶
+
+Non-ordered collection with each element present only once
+
+In [81]:
+
+    val set = Set(1, 2, 3, 4)
+    set + 3
+
+Out[81]:
+
+    Set(1, 2, 3, 4)
+
+In [82]:
+
+    set contains 1
+    // or
+    set(1)
+
+Out[82]:
+
+    true
+
+Set Implementations¶
+
+Immutable¶
+
+In [83]:
+
+    import scala.collection.immutable
+
+    immutable.BitSet()
+    immutable.HashSet[AnyVal]()
+    immutable.ListSet[AnyVal]()
+    immutable.TreeSet[Int]()
+    immutable.SortedSet[Int]()
+
+Out[83]:
+
+    TreeSet()
+
+Mutable¶
+
+In [84]:
+
+    import scala.collection.mutable
+
+    mutable.BitSet()
+    mutable.HashSet[AnyVal]()
+    mutable.LinkedHashSet[AnyVal]()
+    mutable.TreeSet[Int]()
+
+Out[84]:
+
+    TreeSet()
+
+Vector¶
+
+Collection with acceptable performance in access and update.
+
+In [85]:
+
+    val v = Vector(1, 2, 3, 4)
+
+Out[85]:
+
+    [[1, 2, 3, 4]]
+
+In [86]:
+
+    v :+ 5 :+ 6
+
+Out[86]:
+
+    [[1, 2, 3, 4, 5, 6]]
+
+In [87]:
+
+    v(1)
+
+Out[87]:
+
+    2
+
+In [88]:
+
+    v updated(2, 10)
+
+Out[88]:
+
+    [[1, 2, 10, 4]]
+
+In [89]:
+
+    0 +: v
+
+Out[89]:
+
+    [[0, 1, 2, 3, 4]]
+
+Stack¶
+
+LIFO
+
+In [90]:
+
+    val s = scala.collection.immutable.Stack[Int](1, 2, 3, 4)
+
+Out[90]:
+
+    [[1, 2, 3, 4]]
+
+In [91]:
+
+    s push(29) push(98)
+
+Out[91]:
+
+    [[98, 29, 1, 2, 3, 4]]
+
+In [92]:
+
+    s top
+
+Out[92]:
+
+    1
+
+In [93]:
+
+    s pop // Remove the first element from the stack
+
+Out[93]:
+
+    [[2, 3, 4]]
+
+Queue¶
+
+FIFO
+
+In [94]:
+
+    val q = scala.collection.immutable.Queue[Int](1, 2, 3, 4)
+
+Out[94]:
+
+    [[1, 2, 3, 4]]
+
+In [95]:
+
+    q enqueue(98) enqueue(76)
+
+Out[95]:
+
+    [[1, 2, 3, 4, 98, 76]]
+
+In [96]:
+
+    q dequeue
+
+Out[96]:
+
+    (1,Queue(2, 3, 4))
+
+Range¶
+
+In [97]:
+
+    1 to 10
+
+Out[97]:
+
+    [[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]]
+
+In [98]:
+
+    1 until 10
+
+Out[98]:
+
+    [[1, 2, 3, 4, 5, 6, 7, 8, 9]]
+
+In [99]:
+
+    0 to 100 by 5
+
+Out[99]:
+
+    [[0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100]]
+
+Streams¶
+
+Lazy List, only the first occurrence is evaluated
+
+In [100]:
+
+    val s = 1 #:: 2 #:: 3 #:: Stream.empty
+
+Out[100]:
+
+    [[1, 2, 3]]
+
+In [101]:
+
+    Stream(1, 2, 3)
+
+Out[101]:
+
+    [[1, 2, 3]]
+
+In [102]:
+
+    def fibonacci(a: Int, b: Int): Stream[Int] = a #:: fibonacci(b, a + b)
+    fibonacci(0, 1).take(10).force
+
+Out[102]:
+
+    [[0, 1, 1, 2, 3, 5, 8, 13, 21, 34]]
+
+Collections in detail¶
+
+[]
+
+Traversable¶
+
+Traversables collections implement foreach, which allows the collection
+to be browsed by calling a function.
+
+In [103]:
+
+    'a' to 'z' foreach print
+
+    abcdefghijklmnopqrstuvwxyz
+
+Iterable¶
+
+Crossover collections implement iterator, which allows access to each
+element without modification.
+
+In [104]:
+
+    val ite = ('a' to 'z').iterator
+    while (ite.hasNext) print(ite.next)
+
+    abcdefghijklmnopqrstuvwxyz
+
+Seq¶
+
+The Seq collections are ordered.
+
+In [105]:
+
+    val s = ('a' to 'z')
+
+Out[105]:
+
+    [[a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w, x, y, z]]
+
+In [106]:
+
+    s(scala.util.Random.nextInt(25))
+
+Out[106]:
+
+    u
+
+In [107]:
+
+    s.segmentLength(v => (v < 'd'), 1) // Length of the longest sequence according to a predicate and an index
+
+Out[107]:
+
+    2
+
+In [108]:
+
+    s.prefixLength(v => (v < 'd')) // Length of the longest sequence according to a predicate from index 0
+
+Out[108]:
+
+    3
+
+In [109]:
+
+    s.indexWhere(v => "hello world" contains v.toString) // first indice according to a predicate
+
+Out[109]:
+
+    3
+
+In [110]:
+
+    s.lastIndexWhere(v => "hello world" contains v.toString) // last indice according to a predicate
+
+Out[110]:
+
+    22
+
+In [111]:
+
+    s.indexOf('z')
+
+Out[111]:
+
+    25
+
+In [112]:
+
+    s.startsWith(Seq('a', 'b'))
+
+Out[112]:
+
+    true
+
+In [113]:
+
+    s.endsWith(Seq('y', 'z'))
+
+Out[113]:
+
+    true
+
+In [114]:
+
+    s.reverse
+
+Out[114]:
+
+    [[z, y, x, w, v, u, t, s, r, q, p, o, n, m, l, k, j, i, h, g, f, e, d, c, b, a]]
+
+In [115]:
+
+    s.indexOfSlice(Seq('k', 'l'))
+
+Out[115]:
+
+    10
+
+Usual operations¶
+
+Add / remove an element¶
+
+  Operation                                             Description                                              Collection
+  ----------------------------------------------------- -------------------------------------------------------- -----------------------
+  c + e ; c + (e1,..,en)                                Add elements, return a new collection.                   Map, Set
+  c += e ; c += (e1,..,en) ; c -= e ; c -= (e1,..,en)   Adds and removes elements by modifying the collection.   Mutable
+  c - e ; c - (e1,..,en)                                Retire des éléments, retourne une nouvelle collection.   ArrayBuffer, Map, Set
+  c :+ e ; e +: e                                       Remove items, return a new collection.                   Seq
+  e :: c                                                Add an element at the beginning.                         List
+  e #:: c                                               Add an element at the beginning.                         Stream
+
+Update¶
+
+  Operation                   Description                                       Collection
+  --------------------------- ------------------------------------------------- --------------------------
+  c(k) = e ; c.update(k, e)   Updates the item in the indexed collection k.     mutable.Map, mutable.Seq
+  c.updated(k, e)             New collection in which the element is updated.   Sauf Set.
+
+Assemblist operations¶
+
+  Opération                   Description                         Collection
+  --------------------------- ----------------------------------- -----------------------
+  c ++ c2                     Union.                              Iterable
+  c - c2                      c without the elements of c2        ArrayBuffer, Map, Set
+  c2 ++=: c                   Add c2 at the top of c              ArrayBuffer
+  c ++= c2 ; c -= c2          Rajoute c2 à c ou enlève c2 à c     Mutable
+  c diff c2                   Add c2 to c or remove c2 to c       Seq
+  c ::: c2                    Union                               List
+  c | c2 ; c & c2 ; c &~ c2   Union, Intersection et Difference   Set
+
+Cast¶
+
+In [116]:
+
+    Seq(1).toArray
+    Seq(1).toBuffer
+    Seq(1).toList
+    Seq((1, 2)).toMap
+    Seq(1).toStream
+    Seq(1).toString
+    Seq(1).toVector
+
+    Seq(1).toTraversable
+    Seq(1).toIndexedSeq
+    Seq(1).toIterable
+    Set(1).toSeq
+    Seq(1).toSet
+
+Out[116]:
+
+    Set(1)
+
+In [117]:
+
+    val collec = 1 to 100 by 8
+    collec.to[List] // in general
+
+Out[117]:
+
+    [[1, 9, 17, 25, 33, 41, 49, 57, 65, 73, 81, 89, 97]]
+
+Operations of Iterables¶
+
+In [118]:
+
+    val collec = (1 to 100 by 6) ++ Seq(4)
+
+Out[118]:
+
+    [[1, 7, 13, 19, 25, 31, 37, 43, 49, 55, 61, 67, 73, 79, 85, 91, 97, 4]]
+
+In [119]:
+
+    collec.size
+
+Out[119]:
+
+    18
+
+In [120]:
+
+    collec.count(_%2 == 0)
+
+Out[120]:
+
+    1
+
+In [121]:
+
+    collec.isEmpty
+
+Out[121]:
+
+    false
+
+In [122]:
+
+    collec.nonEmpty
+
+Out[122]:
+
+    true
+
+In [123]:
+
+    collec.sameElements(collec)
+
+Out[123]:
+
+    true
+
+In [124]:
+
+    collec.forall(_ > 0)
+
+Out[124]:
+
+    true
+
+In [125]:
+
+    collec.exists(_ < 0)
+
+Out[125]:
+
+    false
+
+In [126]:
+
+    collec.sum
+
+Out[126]:
+
+    837
+
+In [127]:
+
+    collec.product
+
+Out[127]:
+
+    -320583804
+
+In [128]:
+
+    collec.min
+
+Out[128]:
+
+    1
+
+In [129]:
+
+    collec.max
+
+Out[129]:
+
+    97
+
+Selection and cutting¶
+
+In [130]:
+
+    val collec = (1 to 100 by 6) ++ Seq(4)
+
+Out[130]:
+
+    [[1, 7, 13, 19, 25, 31, 37, 43, 49, 55, 61, 67, 73, 79, 85, 91, 97, 4]]
+
+In [131]:
+
+    collec.head
+
+Out[131]:
+
+    1
+
+In [132]:
+
+    collec.last
+
+Out[132]:
+
+    4
+
+In [133]:
+
+    collec.tail
+
+Out[133]:
+
+    [[7, 13, 19, 25, 31, 37, 43, 49, 55, 61, 67, 73, 79, 85, 91, 97, 4]]
+
+In [134]:
+
+    collec.init
+
+Out[134]:
+
+    [[1, 7, 13, 19, 25, 31, 37, 43, 49, 55, 61, 67, 73, 79, 85, 91, 97]]
+
+In [135]:
+
+    collec.take(5)
+
+Out[135]:
+
+    [[1, 7, 13, 19, 25]]
+
+In [136]:
+
+    collec.drop(5)
+
+Out[136]:
+
+    [[31, 37, 43, 49, 55, 61, 67, 73, 79, 85, 91, 97, 4]]
+
+In [137]:
+
+    collec.splitAt(5)
+
+Out[137]:
+
+    (Vector(1, 7, 13, 19, 25),Vector(31, 37, 43, 49, 55, 61, 67, 73, 79, 85, 91, 97, 4))
+
+In [138]:
+
+    collec.takeRight(5)
+
+Out[138]:
+
+    [[79, 85, 91, 97, 4]]
+
+In [139]:
+
+    collec.dropRight(5)
+
+Out[139]:
+
+    [[1, 7, 13, 19, 25, 31, 37, 43, 49, 55, 61, 67, 73]]
+
+In [140]:
+
+    collec.takeWhile(_ < 30)
+
+Out[140]:
+
+    [[1, 7, 13, 19, 25]]
+
+In [141]:
+
+    collec.dropWhile(_ < 30)
+
+Out[141]:
+
+    [[31, 37, 43, 49, 55, 61, 67, 73, 79, 85, 91, 97, 4]]
+
+In [142]:
+
+    collec.span(_ < 30)
+
+Out[142]:
+
+    (Vector(1, 7, 13, 19, 25),Vector(31, 37, 43, 49, 55, 61, 67, 73, 79, 85, 91, 97, 4))
+
+In [143]:
+
+    collec.filter(_ % 2 == 0)
+
+Out[143]:
+
+    [[4]]
+
+In [144]:
+
+    collec.filterNot(_ % 2 == 0)
+
+Out[144]:
+
+    [[1, 7, 13, 19, 25, 31, 37, 43, 49, 55, 61, 67, 73, 79, 85, 91, 97]]
+
+In [145]:
+
+    collec.partition(_ % 2 == 0)
+
+Out[145]:
+
+    (Vector(4),Vector(1, 7, 13, 19, 25, 31, 37, 43, 49, 55, 61, 67, 73, 79, 85, 91, 97))
+
+In [146]:
+
+    collec.slice(3, 7)
+
+Out[146]:
+
+    [[19, 25, 31, 37]]
+
+In [147]:
+
+    collec.mkString(";")
+
+Out[147]:
+
+    1;7;13;19;25;31;37;43;49;55;61;67;73;79;85;91;97;4
+
+In [148]:
+
+    collec.mkString("[", ",", "]")
+
+Out[148]:
+
+    [1,7,13,19,25,31,37,43,49,55,61,67,73,79,85,91,97,4]
+
+Transformation of a collection¶
+
+map, flatMap¶
+
+In [149]:
+
+    def range(n: Int) = 0 to n
+
+Out[149]:
+
+    range: (n: Int)scala.collection.immutable.Range.Inclusive
+
+In [150]:
+
+    Seq(1, 2, 3, 4).map(range)
+
+Out[150]:
+
+    [[Range(0, 1), Range(0, 1, 2), Range(0, 1, 2, 3), Range(0, 1, 2, 3, 4)]]
+
+In [151]:
+
+    Seq(1, 2, 3, 4).flatMap(range) // merges collections
+
+Out[151]:
+
+    [[0, 1, 0, 1, 2, 0, 1, 2, 3, 0, 1, 2, 3, 4]]
+
+reduceLeft, reduceRight¶
+
+In [152]:
+
+    (1 to 5).reduceLeft(_-_)
+
+Out[152]:
+
+    -13
+
+In [153]:
+
+    (1 to 5).reduceRight(_-_)
+
+Out[153]:
+
+    3
+
+foldRight, foldLeft¶
+
+Same thing as reduction but with an initial element.
+
+In [154]:
+
+    ((1 to 4) ++ (1 to 6)).foldLeft(Set[Int]())(_+_)
+
+Out[154]:
+
+    Set(5, 1, 6, 2, 3, 4)
+
+In [155]:
+
+    // number of occurrences
+    Seq(1, 2, 1, 1, 7, 7, 2, 9).foldLeft(Map[Int, Int]()) ((counter, e) => counter + (e -> (counter.getOrElse(e, 0) + 1)))
+
+scanLeft, scanRight¶
+
+Same as fold by saving the intermediate results in a collection
+
+In [156]:
+
+    Seq(1, 2, 4, 1, 3, 4).scanLeft(Set[Int]()) ((s, e) => s + e)
+
+Out[156]:
+
+    [[Set(), Set(1), Set(1, 2), Set(1, 2, 4), Set(1, 2, 4), Set(1, 2, 4, 3), Set(1, 2, 4, 3)]]
+
+zip, zipAll, zipWithIndex, unzip¶
+
+In [157]:
+
+    "abcde" zip 1.to(5)
+
+Out[157]:
+
+    [[(a,1), (b,2), (c,3), (d,4), (e,5)]]
+
+In [158]:
+
+    "abcde".zipAll(1.to(2), "*", -1) // with default value on the left and right
+
+Out[158]:
+
+    [[(a,1), (b,2), (c,-1), (d,-1), (e,-1)]]
+
+In [159]:
+
+    "abcde" zipWithIndex
+
+Out[159]:
+
+    [[(a,0), (b,1), (c,2), (d,3), (e,4)]]
+
+In [160]:
+
+    Seq((1, 2), (3, 4), (5, 6)) unzip
+
+Out[160]:
+
+    (List(1, 3, 5),List(2, 4, 6))
+
+Operations of Seq¶
+
+In [161]:
+
+    val s = Seq(5, 6, 2, 8, -3, 0, 2, 8)
+
+Out[161]:
+
+    [[5, 6, 2, 8, -3, 0, 2, 8]]
+
+In [162]:
+
+    s.indexOf(2)
+
+Out[162]:
+
+    2
+
+In [163]:
+
+    s.lastIndexOf(2)
+
+Out[163]:
+
+    6
+
+In [164]:
+
+    s.indexOfSlice(Seq(2, 8))
+
+Out[164]:
+
+    2
+
+In [165]:
+
+    s.lastIndexOfSlice(Seq(2, 8))
+
+Out[165]:
+
+    6
+
+In [166]:
+
+    s.indexWhere(_ % 2 == 0)
+
+Out[166]:
+
+    1
+
+In [167]:
+
+    s.prefixLength(_ > 0)
+
+Out[167]:
+
+    4
+
+In [168]:
+
+    s.segmentLength(_ > 0, 3)
+
+Out[168]:
+
+    1
+
+In [169]:
+
+    s.contains(1)
+
+Out[169]:
+
+    false
+
+In [170]:
+
+    s.containsSlice(Seq(8, -3))
+
+Out[170]:
+
+    true
+
+In [171]:
+
+    s.startsWith(Seq(0))
+
+Out[171]:
+
+    false
+
+In [172]:
+
+    s.endsWith(Seq(2, 8))
+
+Out[172]:
+
+    true
+
+In [173]:
+
+    s.reverse
+
+Out[173]:
+
+    [[8, 2, 0, -3, 8, 2, 6, 5]]
+
+In [174]:
+
+    s.intersect(Seq(1, 7, 8, 3))
+
+Out[174]:
+
+    [[8]]
+
+In [175]:
+
+    s.diff(Seq(1, 7, 8, 3, 2))
+
+Out[175]:
+
+    [[5, 6, -3, 0, 2, 8]]
+
+In [176]:
+
+    s.slice(0, 4).permutations.toList
+
+Out[176]:
+
+    [[List(5, 6, 2, 8), List(5, 6, 8, 2), List(5, 2, 6, 8), List(5, 2, 8, 6), List(5, 8, 6, 2), List(5, 8, 2, 6), List(6, 5, 2, 8), List(6, 5, 8, 2), List(6, 2, 5, 8), List(6, 2, 8, 5), List(6, 8, 5, 2), List(6, 8, 2, 5), List(2, 5, 6, 8), List(2, 5, 8, 6), List(2, 6, 5, 8), List(2, 6, 8, 5), List(2, 8, 5, 6), List(2, 8, 6, 5), List(8, 5, 6, 2), List(8, 5, 2, 6), List(8, 6, 5, 2), List(8, 6, 2, 5), List(8, 2, 5, 6), List(8, 2, 6, 5)]]
+
+In [177]:
+
+    s.slice(0, 4).combinations(2).toList
+
+Out[177]:
+
+    [[List(5, 6), List(5, 2), List(5, 8), List(6, 2), List(6, 8), List(2, 8)]]
+
+In [178]:
+
+    s.sorted
+
+Out[178]:
+
+    [[-3, 0, 2, 2, 5, 6, 8, 8]]
+
+In [179]:
+
+    s.sortWith(_ > _)
+
+Out[179]:
+
+    [[8, 8, 6, 5, 2, 2, 0, -3]]
+
+In [180]:
+
+    s.sortBy(_ - scala.util.Random.nextInt(8)) // transforms the collection before sorting
+
+Out[180]:
+
+    [[2, -3, 2, 0, 8, 6, 5, 8]]
+
+Parallel collections¶
+
+par¶
+
+To understand where a parallel collection can be useful, it helps to
+think about how they work. Conceptually, you can imagine a collection
+being split into different chunks; your algorithm is then applied to the
+chunks, and at the end of the operation, the different chunks are
+recombined. To be used only if the order is not important.
+
+In [181]:
+
+    1 to 100 par
+
+Out[181]:
+
+    ParRange(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100)
+
+In [182]:
+
+    (1 to 100 par) seq
+
+Out[182]:
+
+    [[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 98, 99, 100]]
+
+In [183]:
+
+    val start = System.nanoTime
+
+    val r = 0 to 1000000
+
+    for (i <- 0 to 100) {val cpt = r.count(_ % 3 == 0)}
+    s"${(System.nanoTime - start) / 1000}ms"
+
+Out[183]:
+
+    1898845ms
+
+In [184]:
+
+    val start = System.nanoTime
+
+    val r = 0 to 1000000
+
+    for (i <- 0 to 100) {val cpt = r.par.count(_ % 3 == 0)}
+    s"${(System.nanoTime - start) / 1000}ms"
+
+Out[184]:
+
+    1192419ms
+
+Lazy view¶
+
+In [185]:
+
+    val v = (1 to 5).view.map(_ * 3)
+    println(v) // nothing is evaluated
+
+    SeqViewM(...)
+
+In [186]:
+
+    println(v(3))
+
+    12
+
+In [187]:
+
+    println(v.force)
+
+    Vector(3, 6, 9, 12, 15)
+
+Object oriented programming¶
+
+Class statement¶
+
+In [188]:
+
+    class Money(startMoney: Int) {
+        def this() = this(0) // builder
+        private var contain: Int = 0
+        def +=(money: Int) = contain += money
+        def empty = {val solde = contain; contain = 0; solde}
+        def howMany = contain
+        override def toString = contain.toString
+    }
+
+Out[188]:
+
+    defined class Money
+    warning: previously defined object Money is not a companion to class Money.
+    Companions must be defined together; you may wish to use :paste mode for this.
+
+public, private and protected access¶
+
+public¶
+
+In [189]:
+
+    class ClassA{ // without indication the methods and variables are by default public
+        val bar = "foo"
+        def foo = "bar"
+    }
+
+Out[189]:
+
+    defined class ClassA
+
+private¶
+
+In [190]:
+
+    class ClassA {private val foo ="bar"} // access only for this
+    (new ClassA).foo
+
+    <console>:16: error: value foo in class ClassA cannot be accessed in ClassA
+           (new ClassA).foo
+                        ^
+
+protected¶
+
+In [191]:
+
+    class ClassA {protected def hey(s: String) = println(s"Hey $s !")} // access for this and children
+
+Out[191]:
+
+    defined class ClassA
+
+In [192]:
+
+    class ClassB extends ClassA {hey("John")}
+    new ClassB
+
+    Hey John !
+
+In [193]:
+
+    class ClassC {
+        hey("John")
+        (new ClassA).hey("John")
+    }
+
+    <console>:17: error: method hey in class ClassA cannot be accessed in ClassA
+     Access to protected method hey not permitted because
+     enclosing class ClassC is not a subclass of
+     class ClassA where target is defined
+           (new ClassA).hey("John")
+                        ^
+
+Refine the scope of access¶
+
+Specified a restriction limit that can be this, a package, a class or an
+object : private[limit] or protected[limit]
+
+Getters and Setters¶
+
+In [194]:
+
+    class Money {var amount = 0}
+
+Out[194]:
+
+    defined class Money
+    warning: previously defined object Money is not a companion to class Money.
+    Companions must be defined together; you may wish to use :paste mode for this.
+
+In [195]:
+
+    val money = new Money
+
+Out[195]:
+
+    $line223.$read$$iw$$iw$Money@19eb9cc6
+
+In [196]:
+
+    money.amount = 100 //setter
+
+Out[196]:
+
+    100
+
+In [197]:
+
+    money.amount //getter
+
+Out[197]:
+
+    100
+
+Constructors¶
+
+In [198]:
+
+    class ClassA(attribute1: Int, attribute2: Int){ //main constructors
+        def this(){ // another constructor
+            this(0, 0)
+        }
+        override def toString: String = s"$attribute1, $attribute2"
+    }
+
+Out[198]:
+
+    defined class ClassA
+
+In [199]:
+
+    new ClassA(30, 40).toString
+
+Out[199]:
+
+    30, 40
+
+In [200]:
+
+    new ClassA().toString
+
+Out[200]:
+
+    0, 0
+
+In [201]:
+
+    class ClassA(val attribute1: Int, private var attribute2: Int){ // attributes are accessible with getters and setters
+        def this(){ // another constructor
+            this(0, 0)
+        }
+        override def toString: String = s"$attribute1, $attribute2"
+    }
+
+Out[201]:
+
+    defined class ClassA
+
+In [202]:
+
+    class Fraction(val numerator: Int, val denominator: Int){
+        require(denominator != 0, "denominator can't be equals 0")
+    }
+
+Out[202]:
+
+    defined class Fraction
+
+In [203]:
+
+    new Fraction(1, 2)
+
+Out[203]:
+
+    $line231.$read$$iw$$iw$Fraction@8344059
+
+In [204]:
+
+    new Fraction(1, 0)
+
+    java.lang.IllegalArgumentException: requirement failed: denominator can't be equals 0
+      at scala.Predef$.require(Predef.scala:224)
+      ... 48 elided
+
+Nested Classes¶
+
+In [205]:
+
+    class ClassA {
+        classAalias => // defined an alias for ClassA.this
+        val id = System.nanoTime 
+        class ClassB {
+            def hey = println("Hello")
+            def id = ClassA.this.id // access the context of the surrounding class
+            def id2 = classAalias.id
+        
+        }
+        def buildClassB = new ClassB
+        def bar(v: ClassA#ClassB) = println("Hello") // accepts all varieties of ClassA and ClassB
+    }
+
+Out[205]:
+
+    defined class ClassA
+
+In [206]:
+
+    val a  = new ClassA
+    val b = a.buildClassB
+    b.hey
+    a.bar(b)
+    println(a.id, b.id, b.id2)
+
+    Hello
+    Hello
+    (228877232490212,228877232490212,228877232490212)
+
+Anonymous Classes¶
+
+In [207]:
+
+    val person = new {
+        val name: String = "John"
+        def presentation(): Unit = println(s"My name is $name.")
+    }
+    person.presentation()
+
+    My name is John.
+
+In [208]:
+
+    def printName(person: {val name: String}) = { // {val name: String} is a type.
+        println(person.name)
+    }
+    printName(person)
+
+    John
+
+Type and this¶
+
+In [209]:
+
+    class ClassA(var a: Int = 0) {
+        def update(newA: Int): this.type = {
+            a = newA
+            this
+        }  
+    }
+
+Out[209]:
+
+    defined class ClassA
+
+In [210]:
+
+    val a = new ClassA()
+    a.update(10) // return a new object
+
+Out[210]:
+
+    $line240.$read$$iw$$iw$ClassA@bad8556
+
+Transtyping¶
+
+In [211]:
+
+    val obj1: Seq[Int] = Seq.empty
+    obj1.isInstanceOf[Iterable[Int]]
+
+Out[211]:
+
+    true
+
+In [212]:
+
+    obj1.asInstanceOf[Iterable[Int]]
+
+Out[212]:
+
+    [[]]
+
+In [213]:
+
+    obj1.getClass
+
+Out[213]:
+
+    class scala.collection.immutable.Nil$
+
+Object¶
+
+Singleton Object¶
+
+In [214]:
+
+    object Object { // Usually contains the static elements
+        val foo = 0
+        def bar = foo  
+    }
+
+Out[214]:
+
+    $line245.$read$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$Object$@7ad16797
+
+In [215]:
+
+    Object.bar
+
+Out[215]:
+
+    0
+
+Any Methods¶
+
+In [216]:
+
+    class ClassA(var a: Int = 0) {
+        override def toString =s"$a"
+        
+        override def equals(other: Any) = {
+            if (other.isInstanceOf[ClassA]) this.a == other.asInstanceOf[ClassA].a
+            else false
+        }   
+    }
+
+Out[216]:
+
+    defined class ClassA
+
+In [217]:
+
+    val a = new ClassA(10)
+    val b = new ClassA(99)
+    a.toString
+
+Out[217]:
+
+    10
+
+In [218]:
+
+    a.equals(b) // ou a == b
+
+Out[218]:
+
+    false
+
+Apply and Unapply¶
+
+In [219]:
+
+    object Foo {
+
+        def apply(name: String, suffix: String) = name + "." + suffix
+
+        def unapply(name: String): Option[(String, String)] = {
+          //simple argument extractor
+          val parts = name.split("\\.")
+          if (parts.length == 2) Some(parts(0), parts(1)) else None
+        }
+      }
+
+Out[219]:
+
+    $line250.$read$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$$iw$Foo$@7bc11cce
+
+In [220]:
+
+    val file = Foo("test", "txt")
+
+Out[220]:
+
+    test.txt
+
+In [221]:
+
+    val Foo(name) = file
+
+Out[221]:
+
+    (test,txt)
+
+case class¶
+
+In [222]:
+
+    case class File(name: String, suffix: String)
+
+Out[222]:
+
+    defined class File
+
+In [223]:
+
+    val file: File = File("test", "scala")
+
+Out[223]:
+
+    File(test,scala)
+
+In [224]:
+
+    file.name
+
+Out[224]:
+
+    test
+
+In [225]:
+
+    val File(name, suffix) = file
+
+Out[225]:
+
+    scala
+
+In [226]:
+
+    file.copy(name="test1")
+
+Out[226]:
+
+    File(test1,scala)
+
+Inheritance¶
+
+extends¶
+
+In [227]:
+
+    class Insect
+
+Out[227]:
+
+    defined class Insect
+
+In [228]:
+
+    class Ant extends Insect
+
+Out[228]:
+
+    defined class Ant
+
+Constructor and super-class¶
+
+In [229]:
+
+    class Vehicle(brand: String, nbWheels: Int, fuel: Boolean)
+
+Out[229]:
+
+    defined class Vehicle
+
+In [230]:
+
+    class Bicycle(brand: String) extends Vehicle(brand, 2, false)
+
+Out[230]:
+
+    defined class Bicycle
+
+override¶
+
+In [231]:
+
+    class Class1 {
+        def method = println("class1")
+    }
+
+Out[231]:
+
+    defined class Class1
+
+In [232]:
+
+    class Class2  extends Class1 {
+        override def method = println("class2")
+    }
+
+Out[232]:
+
+    defined class Class2
+
+In [233]:
+
+    val c = new Class2
+    c.method
+
+    class2
+
+Abstract class¶
+
+In [234]:
+
+    abstract class Class1 {
+        var indefinedVar: Int
+        def undefinedMethod()
+    }
+
+Out[234]:
+
+    defined class Class1
+
+final¶
+
+In [235]:
+
+    final class Class1
+
+Out[235]:
+
+    defined class Class1
+
+In [236]:
+
+    class Class2 extends Class1
+
+    <console>:13: error: illegal inheritance from final class Class1
+           class Class2 extends Class1
+                                ^
+
+In [237]:
+
+    class Class1 {
+        final def method = {}
+    }
+
+Out[237]:
+
+    defined class Class1
+
+In [238]:
+
+    class Class2  extends Class1 {
+        override def method = {}
+    }
+
+    <console>:14: error: overriding method method in class Class1 of type => Unit;
+     method method cannot override final member
+           override def method = {}
+                        ^
+
+Implicit conversions¶
+
+Implicit class¶
+
+In [239]:
+
+    implicit class StringFile(s: String) {
+        def splitFile: Option[(String, String)] = {
+            s.split('.') match {
+                case Array(name, suffix) => Some((name, suffix))
+                case _ => None
+            }
+        }
+    }
+
+Out[239]:
+
+    defined class StringFile
+
+In [240]:
+
+    "hey".splitFile
+
+Out[240]:
+
+    None
+
+In [241]:
+
+    "hey.scala".splitFile
+
+Out[241]:
+
+    Some((hey,scala))
+
+implicit conversions method¶
+
+In [242]:
+
+    object Fraction {
+        // Implicitly call by the compiler if it needs it
+        // An import is required: import Fraction.int2Fraction
+        implicit def int2Fraction(i: Int) = new Fraction(i, 1)
+    }
+    class Fraction(val numerator: Int, val denominator: Int) {
+        def +(f: Fraction) = new Fraction(numerator*f.denominator + f.numerator*denominator, denominator * f.denominator)
+        override def toString: String = s"$numerator/$denominator"
+    }
+
+Out[242]:
+
+    warning: there was one feature warning; re-run with -feature for details
+    defined object Fraction
+    defined class Fraction
+
+In [243]:
+
+    new Fraction(2, 3) + new Fraction (2, 1)
+
+Out[243]:
+
+    8/3
+
+In [244]:
+
+    new Fraction(2, 3) + 2
+
+Out[244]:
+
+    8/3
+
+Trait¶
+
+In [245]:
+
+    trait Trait1 {
+        def foo = {}
+    }
+    trait Trait2 {
+        def bar = {}
+    }
+
+    class Class1 extends Trait1 with Trait2
+
+Out[245]:
+
+    defined trait Trait1
+    defined trait Trait2
+    defined class Class1
+
+In [246]:
+
+    class Class2
+
+    val c = new Class2 with Trait1
+
+Out[246]:
+
+    $line277.$read$$iw$$iw$$anon$1@3fc187fb
+
+In [247]:
+
+    new Trait1
+
+    <console>:101: error: trait Trait1 is abstract; cannot be instantiated
+           new Trait1
+           ^
+
+In [ ]:
